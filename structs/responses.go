@@ -80,3 +80,18 @@ type SchoolYear struct {
 	StartDate int    `json:"startDate"`
 	EndDate   int    `json:"endDate"`
 }
+type Period struct {
+	Id               int       `json:"id"`
+	Date             string    `json:"date"`
+	StartTime        int       `json:"startTime"`
+	EndTime          int       `json:"endTime"`
+	ClassIDs         []Class   `json:"kl"`
+	TeacherIDs       []Teacher `json:"te"`
+	SubjectIDs       []Subject `json:"su"`
+	RoomIDs          []Room    `json:"ro"`
+	LessonType       string    `json:"lstype,omitempty"` //„ls“ (lesson) | „oh“ (office hour) | „sb“ (standby) | „bs“ (break supervision) | „ex“(examination)  omitted if lesson
+	Code             string    `json:"code,omitempty"`   //„“ | „cancelled“ | „irregular“ omitted if empty
+	LessonText       string    `json:"lstext,omitempty"`
+	StatisticalFlags string    `json:"statflags,omitempty"`
+	ActivityType     string    `json:"activityType,omitempty"`
+}

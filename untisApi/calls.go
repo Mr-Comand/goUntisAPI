@@ -197,3 +197,20 @@ func (c *Client) GetSchoolyears() ([]structs.SchoolYear, error) {
 
 	return SchoolYears, nil
 }
+
+// Get timetable for Classes, teacher, student, room, subject
+func (c *Client) GetTimetableSimple(params structs.GetTimetableSimpleRequest) ([]structs.Period, error) {
+
+	rpcResp, err := c.CallRPC("getTimetable", params)
+	if err != nil {
+		return nil, err
+	}
+
+	var periods []structs.Period
+	err = json.Unmarshal(rpcResp.Result, &periods)
+	if err != nil {
+		return nil, err
+	}
+
+	return periods, nil
+}
