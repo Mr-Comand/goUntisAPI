@@ -85,13 +85,20 @@ type Period struct {
 	Date             string    `json:"date"`
 	StartTime        int       `json:"startTime"`
 	EndTime          int       `json:"endTime"`
-	ClassIDs         []Class   `json:"kl"`
-	TeacherIDs       []Teacher `json:"te"`
-	SubjectIDs       []Subject `json:"su"`
-	RoomIDs          []Room    `json:"ro"`
-	LessonType       string    `json:"lstype,omitempty"` //„ls“ (lesson) | „oh“ (office hour) | „sb“ (standby) | „bs“ (break supervision) | „ex“(examination)  omitted if lesson
-	Code             string    `json:"code,omitempty"`   //„“ | „cancelled“ | „irregular“ omitted if empty
-	LessonText       string    `json:"lstext,omitempty"`
-	StatisticalFlags string    `json:"statflags,omitempty"`
-	ActivityType     string    `json:"activityType,omitempty"`
+	Classes          []Class   `json:"kl"`
+	Teachers         []Teacher `json:"te"`
+	Subjects         []Subject `json:"su"`
+	Rooms            []Room    `json:"ro"`
+	LessonType       string    `json:"lstype,omitempty"`    //„ls“ (lesson) | „oh“ (office hour) | „sb“ (standby) | „bs“ (break supervision) | „ex“(examination)  omitted if lesson
+	Code             string    `json:"code,omitempty"`      //„“ | „cancelled“ | „irregular“ omitted if empty
+	Info             string    `json:"info"`                //Only in custom request
+	SubstitutionText string    `json:"substText"`           //Only in custom request
+	LessonText       string    `json:"lstext,omitempty"`    //omitempty only in non-custom request
+	LessonNumber     int       `json:"lsnumber"`            //Only in custom request
+	StatisticalFlags string    `json:"statflags,omitempty"` //omitempty only in non-custom request
+	StudentGroup     string    `json:"sg"`
+	BookingRemark    string    `json:"bkRemark"`
+	BookingText      string    `json:"bkText"`
+
+	ActivityType string `json:"activityType,omitempty"`
 }

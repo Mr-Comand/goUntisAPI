@@ -214,3 +214,56 @@ func (c *Client) GetTimetableSimple(params structs.GetTimetableSimpleRequest) ([
 
 	return periods, nil
 }
+
+// Get a customizable timetable for classes, teacher, student, room, subject..
+func (c *Client) GetTimetable(params structs.GetTimetableRequest) ([]structs.Period, error) {
+
+	rpcResp, err := c.CallRPC("getTimetable", struct {
+		Options structs.GetTimetableRequest `json:"options"`
+	}{Options: params})
+	if err != nil {
+		return nil, err
+	}
+
+	var periods []structs.Period
+	err = json.Unmarshal(rpcResp.Result, &periods)
+	if err != nil {
+		return nil, err
+	}
+
+	return periods, nil
+}
+
+// Import time of the last lesson/timetable or substitution import from Untis, returns Unix timestamp
+func (c *Client) GetLatestImportTime() (int, error) {
+
+	rpcResp, err := c.CallRPC("getLatestImportTime", struct{}{})
+	if err != nil {
+		return 0, err
+	}
+
+	var Timestamp int
+	err = json.Unmarshal(rpcResp.Result, &Timestamp)
+	if err != nil {
+		return 0, err
+	}
+
+	return Timestamp, nil
+}
+
+// Get Id of the person (teacher or student) from the name, returns: Id of person or 0 if no fitting person found
+func (c *Client) GetPersonId(params structs.GetPersonIdRequest) (int, error) {
+
+	rpcResp, err := c.CallRPC("getPersonId", params)
+	if err != nil {
+		return 0, err
+	}
+
+	var PersonID int
+	err = json.Unmarshal(rpcResp.Result, &PersonID)
+	if err != nil {
+		return 0, err
+	}
+
+	return PersonID, nil
+}
