@@ -99,6 +99,52 @@ type Period struct {
 	StudentGroup     string    `json:"sg"`
 	BookingRemark    string    `json:"bkRemark"`
 	BookingText      string    `json:"bkText"`
-
-	ActivityType string `json:"activityType,omitempty"`
+	ActivityType     string    `json:"activityType,omitempty"`
 }
+type IdObject struct {
+	Id                  int    `json:"id"`
+	Name                string `json:"name"`
+	ExternalKey         string `json:"externalkey"`
+	OriginalId          int    `json:"orgid"`
+	OriginalName        string `json:"orgname"`
+	OriginalExternalKey string `json:"orgexternalkey"`
+}
+type Substitutions struct {
+	Type             string     `json:"type"` //"cancel" -> cancellation | subst -> teacher substitution | add -> additional period | shift -> shifted period | rmchg -> room change | rmlk -> locked period | bs -> break supervision | oh -> office hour | sb -> standby | other -> foreign substitutions | free -> free periods | ac -> activity | holi -> holiday | stxt -> substitution text
+	LessonId         int        `json:"lsid"`
+	Date             int        `json:"date"`      // Date conversion (current format: int YYYYMMDD)
+	StartTime        int        `json:"startTime"` // Date / Time conversion (current format: int HHMM)
+	EndTime          int        `json:"endTime"`   // Date / Time conversion (current format: int HHMM)
+	Classes          []IdObject `json:"kl"`
+	Teachers         []IdObject `json:"te"`
+	Subjects         []IdObject `json:"su"`
+	Rooms            []IdObject `json:"ro"`
+	SubstitutionText string     `json:"txt"`
+	Reschedule       struct {
+		Date      int `json:"date"`      // Date conversion (current format: int YYYYMMDD)
+		StartTime int `json:"startTime"` // Date / Time conversion (current format: int HHMM)
+		EndTime   int `json:"endTime"`   // Date / Time conversion (current format: int HHMM)
+	} `json:"reschedule"`
+}
+type ClassRegEvents struct {
+	StudentId  int    `json:"studentid"`
+	Surname    string `json:"surname"`
+	Forname    string `json:"forname"`
+	Date       int    `json:"date"` // Date conversion (current format: int YYYYMMDD)
+	Subject    string `json:"subject"`
+	Reason     string `json:"reason"`
+	Text       string `json:"text"`
+	CategoryId int    `json:"categoryId"`
+}
+type Exams struct {
+	Id        int       `json:"id"`
+	Classes   []Class   `json:"classes"`
+	Teachers  []Teacher `json:"teachers"`
+	Students  []Student `json:"students"`
+	Subject   int       `json:"subject"`
+	Date      int       `json:"date"`      // Date conversion (current format: int YYYYMMDD)
+	StartTime int       `json:"startTime"` // Date / Time conversion (current format: int HHMM)
+	EndTime   int       `json:"endTime"`   // Date / Time conversion (current format: int HHMM)
+}
+
+//TODO: to enum

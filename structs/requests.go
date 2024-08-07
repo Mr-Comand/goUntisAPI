@@ -31,7 +31,21 @@ type GetTimetableRequest struct {
 type GetPersonIdRequest struct {
 	Type      int    `json:"type"` // type of element, mandatory 2 = teacher, 5 = student
 	Surname   string `json:"sn"`   //surname, mandatory
-	forename  string `json:"fn"`   //forename, mandatory
-	birthdata string `json:"dob"`  //birthdata, mandatory, use 0 if unknown
+	Forename  string `json:"fn"`   //forename, mandatory
+	Birthdata string `json:"dob"`  //birthdata, mandatory, use 0 if unknown
 
+}
+type GetSubstitutionsRequest struct {
+	StartDate    int    `json:"startDate"`    // mandatory
+	EndDate      string `json:"endDate"`      //mandatory
+	DepartmentId string `json:"departmentId"` //mandatory, use 0 for all departments or if not applicable
+}
+type StartAndEndDate struct {
+	StartDate int    `json:"startDate"` // mandatory
+	EndDate   string `json:"endDate"`   //mandatory
+}
+type GetExamsRequest struct {
+	ExamTypeId int    `json:"examTypeId"` // mandatory
+	StartDate  int    `json:"startDate"`  // mandatory
+	EndDate    string `json:"endDate"`    //mandatory
 }

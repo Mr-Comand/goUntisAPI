@@ -267,3 +267,90 @@ func (c *Client) GetPersonId(params structs.GetPersonIdRequest) (int, error) {
 
 	return PersonID, nil
 }
+
+// Request substitutions for the given date range
+func (c *Client) GetSubstitutions(params structs.GetSubstitutionsRequest) ([]structs.Substitutions, error) {
+
+	rpcResp, err := c.CallRPC("getSubstitutions", params)
+	if err != nil {
+		return nil, err
+	}
+
+	var substitution []structs.Substitutions
+	err = json.Unmarshal(rpcResp.Result, &substitution)
+	if err != nil {
+		return nil, err
+	}
+
+	return substitution, nil
+}
+
+// Request classregevents for the given date range
+func (c *Client) getClassregEvents(params structs.StartAndEndDate) ([]structs.GetClassregEvents, error) {
+
+	rpcResp, err := c.CallRPC("getClassregEvents", params)
+	if err != nil {
+		return nil, err
+	}
+
+	var ClassregEvents []structs.GetClassregEvents
+	err = json.Unmarshal(rpcResp.Result, &ClassregEvents)
+	if err != nil {
+		return nil, err
+	}
+
+	return ClassregEvents, nil
+}
+
+// Request classregevents for the given date range
+func (c *Client) GetExams(params structs.GetExamsRequest) ([]structs.Exam, error) {
+
+	rpcResp, err := c.CallRPC("getExams", params)
+	if err != nil {
+		return nil, err
+	}
+
+	var substitution []structs.Exam
+	err = json.Unmarshal(rpcResp.Result, &substitution)
+	if err != nil {
+		return nil, err
+	}
+
+	return substitution, nil
+}
+
+// Request classregevents for the given date range
+func (c *Client) GetExamTypes() (json.RawMessage, error) {
+
+	rpcResp, err := c.CallRPC("getExams", struct{}{})
+	if err != nil {
+		return nil, err
+	}
+
+	var substitution json.RawMessage
+	err = json.Unmarshal(rpcResp.Result, &substitution)
+	if err != nil {
+		return nil, err
+	}
+
+	return substitution, nil
+}
+
+// Retrieves the timetable for all students together with absene information for a given daterange.
+func (c *Client) GetTimetableWithAbsences(params structs.StartAndEndDate) ([]structs.PeriodWithAbsenceObject, error) {
+
+	rpcResp, err := c.CallRPC("getExams", struct {
+		Objects structs.StartAndEndDate `json:"options"`
+	}{})
+	if err != nil {
+		return nil, err
+	}
+
+	var substitution []structs.Exam
+	err = json.Unmarshal(rpcResp.Result, &substitution)
+	if err != nil {
+		return nil, err
+	}
+
+	return substitution, nil
+}
