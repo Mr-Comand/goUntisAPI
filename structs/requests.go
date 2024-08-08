@@ -49,3 +49,6 @@ type GetExamsRequest struct {
 	StartDate  int    `json:"startDate"`  // mandatory
 	EndDate    string `json:"endDate"`    //mandatory
 }
+
+type PeriodWithAbsenceObject struct {
+}

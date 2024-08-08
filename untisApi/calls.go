@@ -339,18 +339,18 @@ func (c *Client) GetExamTypes() (json.RawMessage, error) {
 // Retrieves the timetable for all students together with absene information for a given daterange.
 func (c *Client) GetTimetableWithAbsences(params structs.StartAndEndDate) ([]structs.PeriodWithAbsenceObject, error) {
 
-	rpcResp, err := c.CallRPC("getExams", struct {
+	rpcResp, err := c.CallRPC("getTimetableWithAbsences", struct {
 		Objects structs.StartAndEndDate `json:"options"`
 	}{})
 	if err != nil {
 		return nil, err
 	}
 
-	var substitution []structs.Exam
-	err = json.Unmarshal(rpcResp.Result, &substitution)
+	var PeriodWithAbsence []structs.PeriodWithAbsenceObject
+	err = json.Unmarshal(rpcResp.Result, &PeriodWithAbsence)
 	if err != nil {
 		return nil, err
 	}
 
-	return substitution, nil
+	return PeriodWithAbsence, nil
 }
