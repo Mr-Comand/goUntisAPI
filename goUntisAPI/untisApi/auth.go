@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/Mr-Comand/goUntisAPI/structs"
+	"github.com/Mr-Comand/goUntisAPI/goUntisAPI/structs"
 )
 
 func (c *Client) Authenticate() error {
