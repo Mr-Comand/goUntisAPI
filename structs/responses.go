@@ -136,7 +136,7 @@ type ClassRegEvents struct {
 	Text       string `json:"text"`
 	CategoryId int    `json:"categoryId"`
 }
-type Exams struct {
+type Exam struct {
 	Id        int       `json:"id"`
 	Classes   []Class   `json:"classes"`
 	Teachers  []Teacher `json:"teachers"`

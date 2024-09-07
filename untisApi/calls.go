@@ -286,14 +286,14 @@ func (c *Client) GetSubstitutions(params structs.GetSubstitutionsRequest) ([]str
 }
 
 // Request classregevents for the given date range
-func (c *Client) getClassregEvents(params structs.StartAndEndDate) ([]structs.GetClassregEvents, error) {
+func (c *Client) getClassregEvents(params structs.StartAndEndDate) ([]structs.ClassRegEvents, error) {
 
 	rpcResp, err := c.CallRPC("getClassregEvents", params)
 	if err != nil {
 		return nil, err
 	}
 
-	var ClassregEvents []structs.GetClassregEvents
+	var ClassregEvents []structs.ClassRegEvents
 	err = json.Unmarshal(rpcResp.Result, &ClassregEvents)
 	if err != nil {
 		return nil, err
