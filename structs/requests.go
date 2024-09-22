@@ -8,11 +8,10 @@ type GetTimetableSimpleRequest struct {
 }
 type GetTimetableRequest struct {
 	Element struct {
-		id      int    `json:"id"`
-		Type    int    `json:"Type"`
-		keyType string `json:"keyType"`
+		Id      int    `json:"id"`
+		Type    int    `json:"Type"` // type of element, mandatory 	1 = klasse, 2 = teacher, 3 = subject, 4 = room, 5 = student
+		KeyType string `json:"keyType"`
 	} `json:"element"`
-	Type              int      `json:"type"`                        // type of element, mandatory 	1 = klasse, 2 = teacher, 3 = subject, 4 = room, 5 = student
 	StartDate         int      `json:"startDate,omitempty"`         // number, format: YYYYMMDD, optional (default: current date)
 	EndDate           int      `json:"endDate,omitempty"`           // number, format: YYYYMMDD, optional (default: current date)
 	OnlyBaseTimetable bool     `json:"onlyBaseTimetable,omitempty"` //  boolean, returns only the base timetable (without bookings etc.)(default:false)
