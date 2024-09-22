@@ -2,6 +2,7 @@ package structs
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // RPCRequest represents a JSON-RPC request.
@@ -24,4 +25,8 @@ type RPCResponse struct {
 type RPCError struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
+}
+
+func (e *RPCError) Error() string {
+	return fmt.Sprintf("RPC error(%d): %s", e.Code, e.Message)
 }

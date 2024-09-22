@@ -3,7 +3,6 @@ package untisApi
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/Mr-Comand/goUntisAPI/structs"
@@ -56,7 +55,8 @@ func (c *Client) CallRPC(method string, params interface{}) (*structs.RPCRespons
 	}
 
 	if rpcResp.Error != nil {
-		return nil, fmt.Errorf("RPC error(%d): %s", rpcResp.Error.Code, rpcResp.Error.Message)
+		return nil, rpcResp.Error
+
 	}
 
 	return &rpcResp, nil
