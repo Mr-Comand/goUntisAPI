@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/Mr-Comand/goUntisAPI/goUntisAPI/structs"
-	"github.com/Mr-Comand/goUntisAPI/goUntisAPI/untisApi"
+	"github.com/Mr-Comand/goUntisAPI/structs"
+	"github.com/Mr-Comand/goUntisAPI/untisApi"
 )
 
 func main() {

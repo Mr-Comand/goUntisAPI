@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/Mr-Comand/goUntisAPI/goUntisAPI/structs"
+	"github.com/Mr-Comand/goUntisAPI/structs"
 )
 
 type Client struct {
