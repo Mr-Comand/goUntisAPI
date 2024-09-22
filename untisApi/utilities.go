@@ -3,6 +3,7 @@ package untisApi
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/Mr-Comand/goUntisAPI/structs"
@@ -28,7 +29,7 @@ func (c *Client) CallRPC(method string, params interface{}) (*structs.RPCRespons
 	if err != nil {
 		return nil, err
 	}
-
+	fmt.Println("", string(reqBody))
 	// Set the Content-Type header
 	req.Header.Set("Content-Type", "application/json")
 	if c.SessionID != "" {

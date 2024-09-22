@@ -82,7 +82,7 @@ type SchoolYear struct {
 }
 type Period struct {
 	Id               int       `json:"id"`
-	Date             string    `json:"date"`
+	Date             int       `json:"date"`
 	StartTime        int       `json:"startTime"`
 	EndTime          int       `json:"endTime"`
 	Classes          []Class   `json:"kl"`
