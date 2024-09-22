@@ -97,6 +97,21 @@ func (c *Client) GetSubjects() ([]structs.Subject, error) {
 
 	return subjects, nil
 }
+func (c *Client) GetRooms() ([]structs.Room, error) {
+
+	rpcResp, err := c.CallRPC("getRooms", struct{}{})
+	if err != nil {
+		return nil, err
+	}
+
+	var rooms []structs.Room
+	err = json.Unmarshal(rpcResp.Result, &rooms)
+	if err != nil {
+		return nil, err
+	}
+
+	return rooms, nil
+}
 
 func (c *Client) GetDepartments() ([]structs.Department, error) {
 
