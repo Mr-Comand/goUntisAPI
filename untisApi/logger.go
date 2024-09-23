@@ -39,46 +39,49 @@ func newLogger(logLogger *log.Logger, level LogLevel) *logger {
 	}
 }
 
-// Debug level log with blue color
-func (l *logger) Debug(msg ...string) {
+// Helper function to log messages with color and level
+func (l *logger) logWithLevel(color, level string, msg ...string) {
 	if l.logger == nil {
 		return
 	}
+
+	// Save the original prefix
+	originalPrefix := l.logger.Prefix()
+
+	// Set new prefix with color and level
+	l.logger.SetPrefix(fmt.Sprintf("%s[%s] %s", color, level, Reset))
+
+	// Log the message
+	l.logger.Println(strings.Join(msg, " "))
+
+	// Restore the original prefix
+	l.logger.SetPrefix(originalPrefix)
+}
+
+// Debug level log with blue color
+func (l *logger) Debug(msg ...string) {
 	if l.level <= DEBUG {
-		l.logger.SetPrefix(fmt.Sprintf("%s[DEBUG]\t%s", Blue, Reset))
-		l.logger.Println(strings.Join(msg, " "))
+		l.logWithLevel(Blue, "DEBUG", msg...)
 	}
 }
 
 // Info level log with green color
 func (l *logger) Info(msg ...string) {
-	if l.logger == nil {
-		return
-	}
 	if l.level <= INFO {
-		l.logger.SetPrefix(fmt.Sprintf("%s[INFO]\t%s", Green, Reset))
-		l.logger.Println(strings.Join(msg, " "))
+		l.logWithLevel(Green, "INFO", msg...)
 	}
 }
 
 // Warn level log with yellow color
 func (l *logger) Warn(msg ...string) {
-	if l.logger == nil {
-		return
-	}
 	if l.level <= WARN {
-		l.logger.SetPrefix(fmt.Sprintf("%s[WARN]\t%s", Yellow, Reset))
-		l.logger.Println(strings.Join(msg, " "))
+		l.logWithLevel(Yellow, "WARN", msg...)
 	}
 }
 
 // Error level log with red color
 func (l *logger) Error(msg ...string) {
-	if l.logger == nil {
-		return
-	}
 	if l.level <= ERROR {
-		l.logger.SetPrefix(fmt.Sprintf("%s[ERROR]\t%s", Red, Reset))
-		l.logger.Println(strings.Join(msg, " "))
+		l.logWithLevel(Red, "ERROR", msg...)
 	}
 }
