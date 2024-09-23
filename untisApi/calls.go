@@ -2,15 +2,12 @@ package untisApi
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/Mr-Comand/goUntisAPI/structs"
 )
 
 func (c *Client) Test() error {
-	rpcResp, err := c.CallRPC("getSchoolyears", struct{}{})
-	data := string(rpcResp.Result)
-	fmt.Println(data, err)
+	_, err := c.CallRPC("getSchoolyears", struct{}{})
 	return err
 }
 

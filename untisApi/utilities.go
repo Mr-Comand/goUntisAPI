@@ -3,7 +3,7 @@ package untisApi
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/Mr-Comand/goUntisAPI/structs"
@@ -12,6 +12,7 @@ import (
 type Client struct {
 	structs.ApiConfig
 	structs.AuthResponse
+	Logger *logger
 }
 
 func (c *Client) CallRPC(method string, params interface{}) (*structs.RPCResponse, error) {
@@ -27,9 +28,9 @@ func (c *Client) CallRPC(method string, params interface{}) (*structs.RPCRespons
 	// Create a new request
 	req, err := http.NewRequest("POST", "https://"+c.Server+"/WebUntis/jsonrpc.do?school="+c.School, bytes.NewBuffer(reqBody))
 	if err != nil {
+		c.Logger.Error("Failed\t" + method + "\t at: \"https://" + c.Server + "/WebUntis/jsonrpc.do?school=" + c.School + "\" with body: " + string(reqBody) + " Error: " + err.Error())
 		return nil, err
 	}
-	fmt.Println("", string(reqBody))
 	// Set the Content-Type header
 	req.Header.Set("Content-Type", "application/json")
 	if c.SessionID != "" {
@@ -44,38 +45,34 @@ func (c *Client) CallRPC(method string, params interface{}) (*structs.RPCRespons
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
+		c.Logger.Error("Failed\t" + method + "\t at: \"https://" + c.Server + "/WebUntis/jsonrpc.do?school=" + c.School + "\" with body: " + string(reqBody) + " Error: " + err.Error())
 		return nil, err
 	}
 	defer resp.Body.Close()
+	c.Logger.Debug("Called\t" + method + "\t at: " + "\"https://" + c.Server + "/WebUntis/jsonrpc.do?school=" + c.School + "\" with body: " + string(reqBody))
 
 	var rpcResp structs.RPCResponse
 
 	err = json.NewDecoder(resp.Body).Decode(&rpcResp)
 	if err != nil {
+		c.Logger.Error("Failed\t" + method + "\t at: \"https://" + c.Server + "/WebUntis/jsonrpc.do?school=" + c.School + "\" with body: " + string(reqBody) + " Error: " + err.Error())
 		return nil, err
 	}
 
 	if rpcResp.Error != nil {
+		c.Logger.Error("Failed\t" + method + "\t at: \"https://" + c.Server + "/WebUntis/jsonrpc.do?school=" + c.School + "\" with body: " + string(reqBody) + " Error: " + rpcResp.Error.Error())
 		return nil, rpcResp.Error
-
 	}
-
+	c.Logger.Debug("Successful\t" + method + "\t at: \"https://" + c.Server + "/WebUntis/jsonrpc.do?school=" + c.School + "\" with body: " + string(reqBody))
 	return &rpcResp, nil
 }
 
-func NewClient(apiConfig structs.ApiConfig) *Client {
-	// Example usage
-
+func NewClient(apiConfig structs.ApiConfig, logger *log.Logger, LogLevel LogLevel) *Client {
 	c := Client{
-		apiConfig,
-		structs.AuthResponse{},
+		ApiConfig:    apiConfig,
+		AuthResponse: structs.AuthResponse{},
+		Logger:       newLogger(logger, LogLevel),
 	}
-
-	// err := c.Authenticate()
-	// if err != nil {
-	// 	fmt.Println("Error authenticating:", err)
-	// 	return &Client{}
-	// }
 
 	return &c
 }

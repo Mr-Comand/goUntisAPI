@@ -2,7 +2,6 @@ package untisApi
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/Mr-Comand/goUntisAPI/structs"
 )
@@ -24,12 +23,19 @@ func (c *Client) Authenticate() error {
 	}
 	c.AuthResponse = authResp
 
-	fmt.Println("Authenticated successfully, session ID:", c.SessionID)
+	c.Logger.Info("Authenticated successfully, session ID:", c.SessionID)
 
 	return nil
 }
+func (c *Client) ContinueSession(SessionID string) error {
+	c.SessionID = SessionID
+	return c.Test()
+}
 func (c *Client) Logout() error {
-	rpcResp, err := c.CallRPC("logout", struct{}{})
-	fmt.Println(rpcResp, err)
+	_, err := c.CallRPC("logout", struct{}{})
+	if err == nil {
+		c.Logger.Info("Logout successful, session ID:", c.SessionID)
+		c.AuthResponse = structs.AuthResponse{}
+	}
 	return err
 }
