@@ -49,7 +49,7 @@ func (l *logger) logWithLevel(color, level string, msg ...string) {
 	originalPrefix := l.logger.Prefix()
 
 	// Set new prefix with color and level
-	l.logger.SetPrefix(fmt.Sprintf("%s[%s] %s", color, level, Reset))
+	l.logger.SetPrefix(fmt.Sprintf("%s[%s]\t%s", color, level, Reset))
 
 	// Log the message
 	l.logger.Println(strings.Join(msg, " "))
