@@ -2,6 +2,14 @@ package structs
 
 import "encoding/json"
 
+type OriginalData interface {
+}
+
+var _ OriginalData = (*Class)(nil)
+var _ OriginalData = (*Room)(nil)
+var _ OriginalData = (*Teacher)(nil)
+var _ OriginalData = (*Subject)(nil)
+
 type Teacher struct {
 	ID        int    `json:"id"`
 	Name      string `json:"name"`
@@ -80,6 +88,7 @@ type SchoolYear struct {
 	StartDate int    `json:"startDate"`
 	EndDate   int    `json:"endDate"`
 }
+
 type Period struct {
 	Id               int       `json:"id"`
 	Date             int       `json:"date"`
@@ -89,6 +98,10 @@ type Period struct {
 	Teachers         []Teacher `json:"te"`
 	Subjects         []Subject `json:"su"`
 	Rooms            []Room    `json:"ro"`
+	OriginalClasses  []Class   `json:"orgkl,omitempty"`
+	OriginalTeachers []Teacher `json:"orgte,omitempty"`
+	OriginalSubjects []Subject `json:"orgsu,omitempty"`
+	OriginalRooms    []Room    `json:"orgro,omitempty"`
 	LessonType       string    `json:"lstype,omitempty"`    //„ls“ (lesson) | „oh“ (office hour) | „sb“ (standby) | „bs“ (break supervision) | „ex“(examination)  omitted if lesson
 	Code             string    `json:"code,omitempty"`      //„“ | „cancelled“ | „irregular“ omitted if empty
 	Info             string    `json:"info"`                //Only in custom request

@@ -2,6 +2,9 @@ package untisApi
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
+	"strings"
 
 	"github.com/Mr-Comand/goUntisAPI/structs"
 )
@@ -217,14 +220,151 @@ func (c *Client) GetTimetableSimple(params structs.GetTimetableSimpleRequest) ([
 	if err != nil {
 		return nil, err
 	}
+	var periodsTemp []interface{}
 
-	var periods []structs.Period
-	err = json.Unmarshal(rpcResp.Result, &periods)
+	err = json.Unmarshal(rpcResp.Result, &periodsTemp)
 	if err != nil {
 		return nil, err
 	}
 
+	periods := make([]structs.Period, len(periodsTemp))
+
+	// Loop over periodsTemp and convert each element into a Period struct
+	// Loop over periodsTemp and convert each element into a Period struct
+	for i, item := range periodsTemp {
+		// Marshal the item to JSON
+		itemJSON, err := json.Marshal(item)
+		if err != nil {
+			return nil, err
+		}
+
+		// Unmarshal JSON into the Period struct
+		var period structs.Period
+		err = json.Unmarshal(itemJSON, &period)
+		if err != nil {
+			return nil, err
+		}
+
+		// Check if original fields exist and populate them
+		var tempMap map[string]interface{}
+		err = json.Unmarshal(itemJSON, &tempMap)
+		if err != nil {
+			return nil, err
+		}
+		// Populate OriginalClasses, OriginalTeachers, etc., if they exist in the response
+		if orgClasses, ok := tempMap["orgkl"]; ok {
+			orgClassesJSON, _ := json.Marshal(orgClasses)
+			var classes []structs.Class
+			_ = json.Unmarshal(orgClassesJSON, &classes)
+			period.OriginalClasses = classes
+		}
+
+		if orgTeachers, ok := tempMap["orgte"]; ok {
+			orgTeachersJSON, _ := json.Marshal(orgTeachers)
+			var teachers []structs.Teacher
+			_ = json.Unmarshal(orgTeachersJSON, &teachers)
+			period.OriginalTeachers = teachers
+		}
+
+		if orgSubjects, ok := tempMap["orgsu"]; ok {
+			orgSubjectsJSON, _ := json.Marshal(orgSubjects)
+			var subjects []structs.Subject
+			_ = json.Unmarshal(orgSubjectsJSON, &subjects)
+			period.OriginalSubjects = subjects
+		}
+
+		if orgRooms, ok := tempMap["orgro"]; ok {
+			orgRoomsJSON, _ := json.Marshal(orgRooms)
+			var rooms []structs.Room
+			_ = json.Unmarshal(orgRoomsJSON, &rooms)
+			period.OriginalRooms = rooms
+		}
+
+		// Add the populated Period struct to the periods slice
+		periods[i] = period
+	}
+
 	return periods, nil
+}
+
+// Ensure the structs implement the OriginalData interface
+func extractOriginalData[T structs.OriginalData](rawPeriod []interface{}, responseElements []T, jsonKey string) ([]T, error) {
+	var originalDataList []T
+
+	for i := range responseElements {
+		var tempMap map[string]interface{}
+
+		// Marshal the element to JSON to extract the needed data
+		elementJSON, err := json.Marshal(rawPeriod[i])
+		if err != nil {
+			return nil, errors.New("failed to marshal element to JSON")
+		}
+
+		// Unmarshal JSON into a temporary map
+		if err = json.Unmarshal(elementJSON, &tempMap); err != nil {
+			return nil, errors.New("failed to unmarshal JSON to tempMap")
+		}
+
+		// Extract the specified jsonKey (e.g., "kl" for classes)
+		if data, exists := tempMap[jsonKey]; exists {
+			// Marshal the extracted data to JSON
+			dataJSON, err := json.Marshal(data)
+			if err != nil {
+				return nil, errors.New("failed to marshal data to JSON")
+			}
+
+			// Parse the JSON array into a slice of interfaces
+			var dataArray []interface{}
+			if err = json.Unmarshal(dataJSON, &dataArray); err != nil {
+				return nil, errors.New("failed to unmarshal dataJSON to dataArray")
+			}
+			fmt.Println("data:", dataArray)
+
+			// Iterate through each item in dataArray
+			for _, item := range dataArray {
+				var itemMap map[string]interface{}
+				itemJSON, err := json.Marshal(item)
+				if err != nil {
+					return nil, errors.New("failed to marshal item to JSON")
+				}
+
+				if err = json.Unmarshal(itemJSON, &itemMap); err != nil {
+					return nil, errors.New("failed to unmarshal itemJSON to itemMap")
+				}
+
+				// Create a temporary map for org fields
+				orgFields := make(map[string]interface{})
+
+				// Populate orgFields for the original item
+				for key, value := range itemMap {
+					fmt.Println(key, itemMap, item)
+					if strings.HasPrefix(key, "org") {
+						orgField := strings.TrimPrefix(key, "org") // Remove "org" prefix
+						orgFields[orgField] = value
+					}
+				}
+
+				// Marshal orgFields back to JSON to unmarshal into originalItem
+				if len(orgFields) > 0 {
+					// Initialize a new instance of T
+					var originalItem T
+					orgFieldsJSON, err := json.Marshal(orgFields)
+					if err != nil {
+						return nil, errors.New("failed to marshal orgFields to JSON")
+					}
+					if err := json.Unmarshal(orgFieldsJSON, &originalItem); err != nil {
+						return nil, errors.New("failed to unmarshal orgFieldsJSON to originalItem")
+					}
+					originalDataList = append(originalDataList, originalItem)
+				}
+			}
+		} else {
+			fmt.Println(tempMap)
+			return nil, errors.New("specified jsonKey not found in tempMap" + jsonKey)
+		}
+	}
+
+	return originalDataList, nil
 }
 
 // Get a customizable timetable for classes, teacher, student, room, subject..
@@ -237,10 +377,65 @@ func (c *Client) GetTimetable(params structs.GetTimetableRequest) ([]structs.Per
 		return nil, err
 	}
 
-	var periods []structs.Period
-	err = json.Unmarshal(rpcResp.Result, &periods)
+	var periodsTemp []interface{}
+
+	err = json.Unmarshal(rpcResp.Result, &periodsTemp)
 	if err != nil {
 		return nil, err
+	}
+
+	periods := make([]structs.Period, len(periodsTemp))
+	fmt.Println(periodsTemp)
+	fmt.Println()
+	fmt.Println()
+	fmt.Println()
+	// Loop over periodsTemp and convert each element into a Period struct
+	// Loop over periodsTemp and convert each element into a Period struct
+	for i, item := range periodsTemp {
+		// Marshal the item to JSON
+		itemJSON, err := json.Marshal(item)
+		if err != nil {
+			return nil, err
+		}
+
+		// Unmarshal JSON into the Period struct
+		var period structs.Period
+		err = json.Unmarshal(itemJSON, &period)
+		if err != nil {
+			return nil, err
+		}
+
+		// Check if original fields exist and populate them
+		var tempMap map[string]interface{}
+		err = json.Unmarshal(itemJSON, &tempMap)
+		if err != nil {
+			return nil, err
+		}
+
+		err = json.Unmarshal(rpcResp.Result, &periodsTemp)
+		if err != nil {
+			return nil, err
+		}
+		// Populate OriginalClasses, OriginalTeachers, etc., if they exist in the response
+		// period.OriginalClasses, err = extractOriginalData(periodsTemp, period.Classes, "kl")
+		// if err != nil {
+		// 	return nil, err
+		// }
+		period.OriginalRooms, err = extractOriginalData(periodsTemp, period.Rooms, "ro")
+		if err != nil {
+			return nil, err
+		}
+		// period.OriginalTeachers, err = extractOriginalData(periodsTemp, period.Teachers, "te")
+		// if err != nil {
+		// 	return nil, err
+		// }
+		// period.OriginalSubjects, err = extractOriginalData(periodsTemp, period.Subjects, "su")
+		// if err != nil {
+		// 	return nil, err
+		// }
+
+		// Add the populated Period struct to the periods slice
+		periods[i] = period
 	}
 
 	return periods, nil
