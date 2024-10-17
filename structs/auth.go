@@ -12,6 +12,7 @@ type AuthResponse struct {
 	SessionID  string `json:"sessionId"`
 	PersonType int    `json:"personType"`
 	PersonID   int    `json:"personId"`
+	KlasseId   int    `json:"klasseId"`
 }
 
 type ApiConfig struct {
