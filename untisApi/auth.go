@@ -22,8 +22,11 @@ func (c *Client) Authenticate() error {
 		return err
 	}
 	c.AuthResponse = authResp
-
-	c.Logger.Info("Authenticated successfully, session ID:", c.SessionID)
+	if c.Censor {
+		c.Logger.Info("Authenticated successfully.")
+	} else {
+		c.Logger.Info("Authenticated successfully, session ID:", c.SessionID)
+	}
 
 	return nil
 }
@@ -34,7 +37,11 @@ func (c *Client) ContinueSession(SessionID string) error {
 func (c *Client) Logout() error {
 	_, err := c.CallRPC("logout", struct{}{})
 	if err == nil {
-		c.Logger.Info("Logout successful, session ID:", c.SessionID)
+		if c.Censor {
+			c.Logger.Info("Logout successful.")
+		} else {
+			c.Logger.Info("Logout successful, session ID:", c.SessionID)
+		}
 		c.AuthResponse = structs.AuthResponse{}
 	}
 	return err
