@@ -28,7 +28,6 @@ func (c *Client) CallRPC(method string, params interface{}) (*structs.RPCRespons
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("test")
 	logBody := reqBody
 	if c.Censor {
 		if logParams, ok := params.(structs.AuthParams); ok {
